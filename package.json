@@ -1,0 +1,14 @@
+{
+  "name": "laboratorio-snyk-ciberseguridad",
+  "version": "1.0.0",
+  "description": "Proyecto vulnerable para practica Snyk CLI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.16.0",
+    "lodash": "4.17.15",
+    "marked": "0.3.9"
+  }
+}
