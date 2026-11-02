@@ -1,0 +1,18 @@
+﻿
+Testing C:\Users\castr\Downloads\laboratorio-snyk...
+
+Organization:      cesar7244
+Package manager:   npm
+Target file:       package-lock.json
+Project name:      laboratorio-snyk-ciberseguridad
+Open source:       no
+Project path:      C:\Users\castr\Downloads\laboratorio-snyk
+Licenses:          enabled
+
+Ô£ö Tested 72 dependencies for known issues, no vulnerable paths found.
+
+Next steps:
+- Run `snyk monitor` to be notified about new related vulnerabilities.
+- Run `snyk test` as part of your CI/test.
+
+

@@ -1,1 +1,0 @@
-﻿const PASSWORD = "SuperSecretPassword123!";

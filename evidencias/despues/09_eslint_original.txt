@@ -1,0 +1,6 @@
+﻿
+C:\Users\castr\Downloads\laboratorio-snyk\server_original.js
+  11:5  warning  Found child_process.exec() with non Literal first argument  security/detect-child-process
+
+Ô£û 1 problem (0 errors, 1 warning)
+

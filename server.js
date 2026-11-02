@@ -1,26 +1,36 @@
 const express = require('express');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
+const net = require('net');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 
+// Oculta la cabecera X-Powered-By (CWE-200)
+app.disable('x-powered-by');
 app.use(express.json());
 
-// Vulnerabilidad SAST 1: Inyección de comandos / Ejecución insegura (CWE-78)
-app.get('/ping', (req, res) => {
-    const ip = req.query.ip;
-    // Mal uso de exec concatenando entrada de usuario directamente
-    exec(`ping -c 1 ${ip}`, (err, stdout, stderr) => {
-        if (err) {
-            return res.status(500).send(`Error: ${stderr}`);
-        }
-        res.send(`<pre>${stdout}</pre>`);
+// Límite de 10 peticiones por minuto en /ping (CWE-770)
+const pingLimiter = rateLimit({ windowMs: 60 * 1000, limit: 10 });
+
+// V1: sin shell y con validación de la entrada (CWE-78)
+app.get('/ping', pingLimiter, (req, res) => {
+    const ip = String(req.query.ip || '');
+    if (net.isIP(ip) === 0) {
+        return res.status(400).json({ error: 'IP inválida' });
+    }
+    const flag = process.platform === 'win32' ? '-n' : '-c';
+    execFile('ping', [flag, '1', ip], { timeout: 5000 }, (err, stdout) => {
+        if (err) return res.status(500).json({ error: 'ping falló' });
+        res.type('text/plain').send(stdout);
     });
 });
 
-// Vulnerabilidad SAST 2: Hardcoded Secrets / Credencial expuesta (CWE-798)
-const DB_PASSWORD = "SuperSecretPassword123!"; 
+// V3: el secreto viene del entorno y nunca se devuelve (CWE-798)
+const DB_PASSWORD = process.env.DB_PASSWORD;
+if (!DB_PASSWORD) console.warn('Aviso: DB_PASSWORD no está definida');
 
 app.get('/config', (req, res) => {
-    res.json({ status: "OK", password: DB_PASSWORD });
+    res.json({ status: 'OK' });
 });
 
 app.listen(3000, () => {
